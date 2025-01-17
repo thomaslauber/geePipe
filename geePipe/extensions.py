@@ -3,14 +3,15 @@
 # Author: Thomas Lauber
 
 import concurrent.futures
-import numpy as np
-import pandas as pd
 from typing import Optional
 import warnings
 
 import ee
 import geemap
 from geopandas import GeoDataFrame
+import numpy as np
+import pandas as pd
+
 
 def add_custom_functions_to_eeImage():
 

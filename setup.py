@@ -9,13 +9,10 @@ setup(
     url="https://github.com/thomaslauber/geePipe",
     packages=find_packages(),
     install_requires=[
-        "earthengine-api>=0.1.0",  # Ensure the user has GEE API installed
-        "numpy",  # Add other dependencies as needed
-    ],
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ],
-    python_requires=">=3.8",
+        "earthengine-api==0.1.390",
+        "geemap==0.31.0",
+        "geopandas==0.14.2",
+        "numpy==1.26.4",
+        "pandas==2.0.0"
+    ]
 )

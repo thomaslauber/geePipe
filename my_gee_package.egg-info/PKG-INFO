@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: my-gee-package
+Version: 0.0.1
+Summary: A package that extends the functionality of Google Earth Engine's Python API.
+Home-page: https://github.com/thomaslauber/geePipe
+Author: Thomas Lauber
+Author-email: thomas.lauber@usys.ethz.ch
+Requires-Dist: earthengine-api==0.1.390
+Requires-Dist: geemap==0.31.0
+Requires-Dist: geopandas==0.14.2
+Requires-Dist: numpy==1.26.4
+Requires-Dist: pandas==2.0.0
