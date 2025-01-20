@@ -1,4 +1,4 @@
-""" Extensions to Google Earth Engine Classes. """
+""" Resampling methods. """
 
 # Author: Thomas Lauber
 
