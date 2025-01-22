@@ -23,6 +23,7 @@ Example script for testing:
 ```python
 import ee 
 import geePipe
+from geopandas import GeoDataFrame
 
 import time 
 
