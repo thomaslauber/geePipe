@@ -1,0 +1,104 @@
+local_settings:
+  raw_data: 'data/arbuscular_mycorrhizal_richness_training_data.csv'
+
+model_params:
+  response_var: (RESPONSE_VAR)
+  log_transform_response_var: TRUE 
+  ensemble: TRUE
+  covariate_list: ['CGIAR_PET',
+                  'CHELSA_BIO_Annual_Mean_Temperature',
+                  'CHELSA_BIO_Annual_Precipitation',
+                  'CHELSA_BIO_Max_Temperature_of_Warmest_Month',
+                  'CHELSA_BIO_Precipitation_Seasonality',
+                  'ConsensusLandCover_Human_Development_Percentage',
+                  # 'ConsensusLandCoverClass_Barren',
+                  # 'ConsensusLandCoverClass_Deciduous_Broadleaf_Trees',
+                  # 'ConsensusLandCoverClass_Evergreen_Broadleaf_Trees',
+                  # 'ConsensusLandCoverClass_Evergreen_Deciduous_Needleleaf_Trees',
+                  # 'ConsensusLandCoverClass_Herbaceous_Vegetation',
+                  # 'ConsensusLandCoverClass_Mixed_Other_Trees',
+                  # 'ConsensusLandCoverClass_Shrubs',
+                  'EarthEnvTexture_CoOfVar_EVI',
+                  'EarthEnvTexture_Correlation_EVI',
+                  'EarthEnvTexture_Homogeneity_EVI',
+                  'EarthEnvTopoMed_AspectCosine',
+                  'EarthEnvTopoMed_AspectSine',
+                  'EarthEnvTopoMed_Elevation',
+                  'EarthEnvTopoMed_Slope',
+                  'EarthEnvTopoMed_TopoPositionIndex',
+                  'EsaCci_BurntAreasProbability',
+                  'GHS_Population_Density',
+                  'GlobBiomass_AboveGroundBiomass',
+                  # 'GlobPermafrost_PermafrostExtent',
+                  'MODIS_NPP',
+                  # 'PelletierEtAl_SoilAndSedimentaryDepositThicknesses',
+                  'SG_Depth_to_bedrock',
+                  'SG_Sand_Content_005cm',
+                  'SG_SOC_Content_005cm',
+                  'SG_Soil_pH_H2O_005cm',
+                  ]
+  composite: (COMPOSITE)
+  n_trees: 250
+  min_leaf_pop: 14
+  var_per_split: 14
+  seed: 123
+
+cv_params:
+  k: 10
+  spatial_cv: TRUE
+  stratification_var: 'Resolve_Biome'
+  cv_fold_header: 'CV_Fold'
+  cv_fold_header_spatial: 'CV_Fold_Spatial'
+  cv_fold_header_random: 'CV_Fold_Random'
+  sort_acc_prop: 'Mean_R2'
+  loo_cv_wpointremoval: FALSE
+  buffer_size: 100000
+  
+general_params:
+  gee_project_folder: 'projects/johanvandenhoogen/assets/2024_pipeline_cleanup/(RESPONSE_VAR)'
+  lat_string: 'Pixel_Lat'
+  long_string: 'Pixel_Long'
+  wait_time: 5
+  training_data_filename: (DATE)_(RESPONSE_VAR)_training_data
+  bootstrap_filename: (DATE)_(RESPONSE_VAR)_bootstrap_samples
+  n_bootstrap_iterations: 100
+  stratification_dict:
+    1: 14.900835665820974
+    2: 2.941697660221864
+    3: 0.526059731441294
+    4: 9.56387696566245
+    5: 2.865354077500338
+    6: 11.519674266872787
+    7: 16.26999434439293
+    8: 8.047078485979089
+    9: 0.861212221078014
+    10: 3.623974712557433
+    11: 6.063922959332467
+    12: 2.5132866428302836
+    13: 20.037841544639985
+    14: 0.26519072167008
+
+export_params:
+  pyramiding_policy: 'mean'
+  export_geometry: 'ee.Geometry.Polygon([[[-180, -88], [180, -88], [180, 88], [-180, 88]]], None, False)'
+  crs: 'EPSG:4326'
+  crs_transform: '[0.008333333333333333, 0, -180, 0, -0.008333333333333333, 90]'
+
+cloud_params:
+  cloud_bucket: 'johanvandenhoogen'
+  cloud_project: 'gem-eth-analysis'
+  use_service_account: False
+  service_account: 'crowther-gee@gem-eth-analysis.iam.gserviceaccount.com'
+  service_account_key: 'auth/gem-eth-analysis-96ea9ecb2158.json'
+  bash_function_earthengine: ['/Users/johanvandenhoogen/miniconda3/envs/ee/bin/earthengine']
+  bash_function_gsutil: ['/Users/johanvandenhoogen/google-cloud-sdk/bin/gsutil']
+  pre_ee_upload_table: ['upload','table']
+  post_ee_upload_table: ['--x_column', 'Pixel_Long', '--y_column', 'Pixel_Lat']
+  asset_id_string_prefix: ['--asset_id=']
+  gcs_cp: ['cp']
+  gcs_ls: ['ls']
+  gcs_rm: ['rm','-r']
+  gcs_detect: ['asset','info']
+  gcs_create_collection: ['create','collection']
+  gcs_create_folder: ['create','folder']
+  asset_doesnt_exist: ['Asset does not exist or is not accessible']
