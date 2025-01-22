@@ -23,7 +23,9 @@ Example script for testing:
 ```python
 import ee 
 import geePipe
-from geopandas import GeoDataFrame
+from geopandas import GeoDataFrame, points_from_xy
+import pandas as pd 
+import matplotlib.pyplot as plt
 
 import time 
 
@@ -38,7 +40,7 @@ gdf = GeoDataFrame(df, geometry=points_from_xy(df['longitude'], df['latitude']),
 size = fc.size().getInfo()
 print(f'Length of ee.FeatureCollection: {size}')
 t1 = time.time()
-sampled = composite.reduceRegions(collection=fc, reducer=ee.Reducer.first())
+sampled = composite.reduceRegionsGDF(collection=fc, reducer=ee.Reducer.first())
 t = time.time() - t1
 print(f'{t:.2f} seconds to sample {size} features')
 
@@ -46,7 +48,7 @@ print(f'{t:.2f} seconds to sample {size} features')
 size = len(gdf)
 print(f'Length of GDF: {size}')
 t1 = time.time()
-sampled = composite.reduceRegions(collection=gdf, reducer=ee.Reducer.first())
+sampled = composite.reduceRegionsGDF(collection=gdf, reducer=ee.Reducer.first())
 t = time.time() - t1
 print(f'{t:.2f} seconds to sample {size} features')
 
@@ -54,7 +56,7 @@ print(f'{t:.2f} seconds to sample {size} features')
 samplingTypes = ['random', 'regular', 'fibonacci']
 for sT in samplingTypes:
   t1 = time.time()
-  sample = generateSample(composite, 1000, sT)
+  sample = geePipe.generateSample(composite, 1000, sT)
   t = time.time() - t1
   sample.plot()
   plt.show()
