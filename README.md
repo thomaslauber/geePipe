@@ -5,7 +5,7 @@ Very basic python package so far. Before installing it, you should create a test
 ```bash
 conda create --name ee_test --clone ee
 ```
-Then, you can install it by running:
+Then, you can install it by downloading the repo and running inside of it:
 ```bash
 pip install -e . --user
 ```
