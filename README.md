@@ -4,6 +4,7 @@ Google Earth Engine Pipeline for Spatio-Temporal models
 Very basic python package so far. Before installing it, you should create a testing conda environment: 
 ```bash
 conda create --name ee_test --clone ee
+conda activate ee_test
 ```
 Then, you can install it by downloading the repo and running inside of it:
 ```bash
