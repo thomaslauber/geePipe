@@ -2,8 +2,14 @@ README.md
 setup.py
 geePipe/__init__.py
 geePipe/extensions.py
+geePipe/resampling.py
+geePipe/sampling.py
+geePipe/utils.py
 my_gee_package.egg-info/PKG-INFO
 my_gee_package.egg-info/SOURCES.txt
 my_gee_package.egg-info/dependency_links.txt
 my_gee_package.egg-info/requires.txt
 my_gee_package.egg-info/top_level.txt
+tests/__init__.py
+tests/fake_ee.py
+tests/test_extensions.py

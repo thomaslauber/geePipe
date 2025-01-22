@@ -13,6 +13,7 @@ setup(
         "geemap==0.31.0",
         "geopandas==0.14.2",
         "numpy==1.26.4",
-        "pandas==2.0.0"
+        "pandas==2.0.0",
+        "scipy==1.11.4"
     ]
 )

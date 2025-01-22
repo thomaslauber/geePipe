@@ -10,3 +10,4 @@ Requires-Dist: geemap==0.31.0
 Requires-Dist: geopandas==0.14.2
 Requires-Dist: numpy==1.26.4
 Requires-Dist: pandas==2.0.0
+Requires-Dist: scipy==1.11.4
