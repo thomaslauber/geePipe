@@ -17,8 +17,13 @@ from functions.helper_functions import breakandwait
 
 from config.config import PIPELINE_PARAMS
 
+# Author: Johan van den Hoogen
+
 # Function to initialize project folder in Google Earth Engine
-def gee_folder_initialization():     
+def gee_folder_initialization(): 
+    '''
+    Function to initialize project folder in Google Earth Engine
+    '''    
     # Turn the folder string into an assetID
     if any(x in subprocess.run(
             PIPELINE_PARAMS['cloud_params']['bash_function_earthengine'] + 
@@ -47,6 +52,9 @@ def gee_folder_initialization():
         time.sleep(PIPELINE_PARAMS['general_params']['wait_time']/2)
 
 def data_processing():
+    '''
+    Pipeline function to preprocess training data
+    '''
     try:
         # try whether fcOI is present
         fcOI = ee.FeatureCollection(PIPELINE_PARAMS['general_params']['gee_project_folder']+PIPELINE_PARAMS['general_params']['training_data_filename'])
@@ -143,6 +151,10 @@ def data_processing():
         return fcOI, preppedCollection_wSpatialFolds
 
 def predicted_observed(top_10Models, classifierList):
+    '''
+    Pipeline function to generate predicted and observed values from the best model
+    '''
+
     fcOI = ee.FeatureCollection(PIPELINE_PARAMS['general_params']['gee_project_folder']+PIPELINE_PARAMS['general_params']['training_data_filename'])
 
     try:
@@ -212,6 +224,10 @@ def predicted_observed(top_10Models, classifierList):
     return predObs_df
 
 def image_classification(composite_img, bestModelName, top_10Models, classifierList):
+    '''
+    Pipeline function to classify an image using either the best model or an ensemble of the top 10 models
+    '''
+
     fcOI = ee.FeatureCollection(PIPELINE_PARAMS['general_params']['gee_project_folder']+PIPELINE_PARAMS['general_params']['training_data_filename'])
 
     if PIPELINE_PARAMS['model_params']['ensemble'] == False:
@@ -247,6 +263,10 @@ def image_classification(composite_img, bestModelName, top_10Models, classifierL
     return classifiedImage
 
 def variable_importance(classifierList, bestModelName, top_10Models):
+    '''
+    Pipeline function to calculate variable importance metrics
+    '''
+
     fcOI = ee.FeatureCollection(PIPELINE_PARAMS['general_params']['gee_project_folder']+PIPELINE_PARAMS['general_params']['training_data_filename'])
 
     if PIPELINE_PARAMS['model_params']['ensemble'] == False:
@@ -303,6 +323,10 @@ def variable_importance(classifierList, bestModelName, top_10Models):
     print('Variable importance metrics complete! Moving on...')
 
 def bootstrapping(classifierList, bestModelName):
+    '''
+    Pipeline function to perform bootstrapping
+    '''
+
     try:
         # Path to bootstrapped samples
         bootstrapFc = ee.FeatureCollection(PIPELINE_PARAMS['general_params']['gee_project_folder']+PIPELINE_PARAMS['general_params']['bootstrap_filename'])
@@ -374,6 +398,10 @@ def bootstrapping(classifierList, bestModelName):
     return ee.Image.cat(meanImage, upperLowerCIImage, stdDevImage, coefOfVarImage).rename(['mean_image', 'lower_ci', 'upper_ci', 'std_dev', 'coef_var'])
 
 def interpolation_extrapolation():
+    '''
+    Pipeline function to perform interpolation and extrapolation assessment
+    '''
+
     training_data = pd.read_csv('data/'+PIPELINE_PARAMS['general_params']['training_data_filename']+'.csv')
 
     ##################################################################################################################################################################
@@ -504,6 +532,8 @@ def interpolation_extrapolation():
     
     return ee.Image.cat(univariate_int_ext_image, PCA_int_ext).rename(['univariate_pct_int_ext', 'PCA_pct_int_ext'])
 
+
+# To be compoleted: spatial leave-one-out cross validation
 
 # ##################################################################################################################################################################
 # # Spatial Leave-One-Out cross validation

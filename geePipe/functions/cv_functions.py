@@ -3,6 +3,8 @@ import yaml
 
 from config.config import PIPELINE_PARAMS
 
+# Author: Johan van den Hoogen
+
 # R^2 function
 def coefficientOfDetermination(fcOI,propertyOfInterest,propertyOfInterest_Predicted):
     '''

@@ -8,6 +8,8 @@ from functions.helper_functions import GEE_FC_to_pd
 
 from config.config import PIPELINE_PARAMS
 
+# Author: Johan van den Hoogen
+
 # Initialize ee API
 if PIPELINE_PARAMS['cloud_params']['use_service_account'] == True:
     credentials = ee.ServiceAccountCredentials(PIPELINE_PARAMS['cloud_params']['service_account'], PIPELINE_PARAMS['cloud_params']['service_account_key'])
@@ -20,6 +22,9 @@ else:
 ##################################################################################################################################################################
 fcOI = ee.FeatureCollection(PIPELINE_PARAMS['general_params']['gee_project_folder']+PIPELINE_PARAMS['general_params']['training_data_filename'])
 def gee_hyperparameter_tuning():
+    '''
+    Perform hyperparameter tuning for random forest regression model
+    '''
 
     # Define hyperparameters for grid search
     varsPerSplit_list = list(range(2, PIPELINE_PARAMS['model_params']['var_per_split'], 2))

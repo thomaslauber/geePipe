@@ -8,8 +8,13 @@ import yaml
 
 from config.config import PIPELINE_PARAMS
 
+# Author: Johan van den Hoogen
+
 # Function to convert an ee.FeatureCollection to a pandas dataframe
 def GEE_FC_to_pd(fc):
+    '''
+    Convert a Google Earth Engine FeatureCollection to a Pandas DataFrame.
+    '''
     result = []
 
     values = fc.toList(500000).getInfo()
@@ -30,11 +35,17 @@ def GEE_FC_to_pd(fc):
 
 # Add point coordinates to FC as properties
 def addLatLon(f, latString, longString):
+    '''
+    Add the latitude and longitude of a point to the properties of a feature.
+    '''
     lat = f.geometry().coordinates().get(1)
     lon = f.geometry().coordinates().get(0)
     return f.set(latString, lat).set(longString, lon)
 
 def breakandwait(var_of_interest):
+    '''
+    Break and wait function to wait for all tasks to finish before moving on.
+    '''
     # !! Break and wait
     count = 1
     while count >= 1:
@@ -47,6 +58,9 @@ def breakandwait(var_of_interest):
     print('Moving on...')
 
 def upload_table(csv_file):
+    '''
+    Upload a CSV file to Google Cloud Storage and then to Google Earth Engine.
+    '''
     # Format the bash call to upload the file to the Google Cloud Storage (GCS) bucket
     gsutilBashUploadList = (
         PIPELINE_PARAMS['cloud_params']['bash_function_gsutil'] +
@@ -90,7 +104,10 @@ def upload_table(csv_file):
     # Wait for a short period to ensure the command has been received by the server
     breakandwait(PIPELINE_PARAMS['model_params']['response_var'])
 
-# task list
+# Task list
 def task_list():
+    '''
+    Print all tasks
+    '''
     taskList = [str(i) for i in ee.batch.Task.list()]
     print(taskList)
