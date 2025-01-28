@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 
-from .utils import raiseEEException
+from .utils import _raiseEEException
 from .extensions import add_custom_functions_to_eeImage
 add_custom_functions_to_eeImage()
 
@@ -274,9 +274,9 @@ def generateSample(
     """
     # Checks
     if not isinstance(image, ee.Image):
-        raiseEEException('generateSample', 'image', 'Image', type(image))
+        _raiseEEException('generateSample', 'image', 'Image', type(image))
     if not isinstance(numPoints, int):
-        raiseEEException('generateSample', 'numPoints', 'integer', type(numPoints))
+        _raiseEEException('generateSample', 'numPoints', 'integer', type(numPoints))
     # if region is None:
     #     region = image.geometry()
     # if not isinstance(region, ee.Geometry):

@@ -12,12 +12,43 @@ from geopandas import GeoDataFrame
 import numpy as np
 import pandas as pd
 
-from .utils import raiseEEException
+from .utils import _raiseEEException
+
+def add_custom_functions_to_eeFeatureCollection():
+
+    def download(self, n_jobs=None):
+        """ Download the input FeatureCollection as a GeoDataFrame.
+        Args:
+            n_jobs: int, optional
+                The number of parallel workers to use. If None, uses all available CPUs + 4, with at most 32.
+        """
+        # Get the size of the feature collection
+        fc = self
+        size = fc.size().getInfo()
+        nr_of_subsets = (size + 1000-1)//1000
+        def _getFeatures(fc, index):
+            fc_sub = ee.FeatureCollection(fc.toList(count=1000, offset=1000*index))
+            sample = ee.data.computeFeatures({'expression': fc_sub, 'fileFormat': 'GEOPANDAS_GEODATAFRAME'})
+            return sample
+        # Download with multiple workers
+        with concurrent.futures.ThreadPoolExecutor(max_workers=n_jobs) as executor:
+            futures = [executor.submit(_getFeatures, fc, index) for index in range(nr_of_subsets)]
+            for future in tqdm(concurrent.futures.as_completed(futures), total=len(futures), desc="Downloading ee.FeatureCollection"):
+                pass
+        # Aggregate the data
+        results = GeoDataFrame()
+        for future in futures:
+            results = pd.concat([results, future.result()])
+        return results
+    ee.FeatureCollection.download = download
+
+
+
+
 
 
 def add_custom_functions_to_eeImage():
 
-    # A custom function to reduce an image to a GeoDataFrame
     def reduceRegionsGDF(
             self,
             collection: ee.FeatureCollection | GeoDataFrame,
@@ -28,25 +59,26 @@ def add_custom_functions_to_eeImage():
             tileScale: Optional[int] = 1,
             n_jobs: Optional[int] = None
     ) -> GeoDataFrame:
-        """ Apply a reducer over the area of each feature in the GeoDataFrame.
+        """ Apply a reducer over the area of each feature in the given collection.
 
         The reducer must have the same number of inputs as the input image has bands.
 
+        Returns the input features as a GeoDataFrame, each augmented with the corresponding reducer outputs.
+
         Args:
-        image: The image to reduce.
-        collection: The features to reduce over. If the crs is not the same as the one of the image, the points will get reprojected.
-        reducer: The reducer to apply.
-        scale: A nominal scale in meters of the projection to work in.
-        crs: The projection to work in. If unspecified, the projection of the image's first band will be used. If specified in addition to scale, rescaled to the specified scale.
-        crsTransform : The list of CRS transform values. This is a row-major ordering of the 3x2 transform matrix. This option is mutually exclusive with 'scale', and replaces any transform already set on the projection.
-        tileScale: A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g., 2 or 4) may enable computations that run out of memory with the default.
-        n_jobs: The number of parallel workers to use. If unspecified, use all available CPUs + 4, with at most 32.
+            collection: The features to reduce over. If the crs is not the same as the one of the image, the points will get reprojected.
+            reducer: The reducer to apply.
+            scale: A nominal scale in meters of the projection to work in.
+            crs: The projection to work in. If unspecified, the projection of the image's first band will be used. If specified in addition to scale, rescaled to the specified scale.
+            crsTransform : The list of CRS transform values. This is a row-major ordering of the 3x2 transform matrix. This option is mutually exclusive with 'scale', and replaces any transform already set on the projection.
+            tileScale: A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g., 2 or 4) may enable computations that run out of memory with the default.
+            n_jobs: The number of parallel workers to use. If unspecified, use all available CPUs + 4, with at most 32.
         """
         # Checks
         if not isinstance(collection, (ee.FeatureCollection, GeoDataFrame)):
-            raiseEEException('Image.reduceRegionsGDF', 'collection', 'FeatureCollection or GeoDataFrame', type(collection))
+            _raiseEEException('Image.reduceRegionsGDF', 'collection', 'FeatureCollection or GeoDataFrame', type(collection))
         if not isinstance(reducer, ee.Reducer):
-            raiseEEException('Image.reduceRegionsGDF', 'reducer', 'Reducer', type(reducer))
+            _raiseEEException('Image.reduceRegionsGDF', 'reducer', 'Reducer', type(reducer))
 
         # If crs is unspecified, use the projection of the first band of the image
         if crs is None:
